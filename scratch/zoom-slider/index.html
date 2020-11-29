@@ -1,0 +1,54 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div class="slider">
+    </div>
+
+    <script type="application/javascript">
+      const maxTime = 800;
+      window.addEventListener('resize', (e) => {
+        redraw()
+      })
+      let pad = 20;
+      const slider = d3.select(".slider").append("svg")
+      const axisGroup = slider.append("g")
+              .attr("transform", `translate(${pad}, 0)`)
+
+      function toTimestamp(seconds) {
+        let hours = Math.floor(seconds / (60 * 60));
+        let minutes = Math.floor(seconds / 60);
+        let withinMinuteSeconds = seconds % 60;
+        let f = d3.format("02d")
+        if (hours == 0) {
+          return `${f(minutes)}:${f(withinMinuteSeconds)}`
+        } else {
+          return `${f(hours)}:${f(minutes)}:${f(withinMinuteSeconds)}`
+        }
+      }
+
+      function redraw() {
+        let width = Math.max(200, window.innerWidth - pad*2);
+        console.log(width)
+        slider.attr("width", width)
+
+        const x = d3.scaleLinear().domain([0, maxTime]).range([0, width
+              - pad*2]);
+        const axis = d3.axisBottom()
+                .tickFormat(x => toTimestamp(x))
+              .scale(x);
+        axisGroup.call(axis);
+      }
+      redraw()
+    </script>
+  </body>
+
+</html>
+ 
